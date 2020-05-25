@@ -10,9 +10,8 @@ Rails.application.routes.draw do
   resource :user
 
   resources :teams do
-    resources :assigns, only: %w(create destroy) do
-      patch :admin, on: :member, controller: :teams
-    end
+    patch :admin, on: :member
+    resources :assigns, only: %w(create destroy) 
     resources :agendas, shallow: true do
       resources :articles do
         resources :comments

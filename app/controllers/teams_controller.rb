@@ -49,12 +49,16 @@ class TeamsController < ApplicationController
   
   def admin
     # binding.irb
-    assign = Assign.find(params[:id])
-    @team = Team.friendly.find(params[:team_id])
-    # binding.irb
-    @team.owner_id = assign.user_id
-    @team.update(team_params)
-    redirect_to team_path
+    # assign = Assign.find(params[:id])
+    # @team = Team.friendly.find(params[:team_id])
+    if @team.update(owner_params)
+      redirect_to @team
+    else
+      render @team
+    end
+    # @team.owner_id = assign.user_id
+    # @team.update(team_params)
+    # redirect_to team_path
   end
 
   private
@@ -65,5 +69,9 @@ class TeamsController < ApplicationController
 
   def team_params
     params.fetch(:team, {}).permit %i[name icon icon_cache owner_id keep_team_id]
+  end
+
+  def owner_params
+    params.permit %i[owner_id]
   end
 end
