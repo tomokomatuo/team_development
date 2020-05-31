@@ -1,5 +1,5 @@
 class AgendasController < ApplicationController
-  # before_action :set_agenda, only: %i[show edit update destroy]
+  before_action :set_agenda, only: [:show, :edit, :update, :destroy]
 
   def index
     @agendas = Agenda.all
@@ -18,6 +18,20 @@ class AgendasController < ApplicationController
       redirect_to dashboard_url, notice: I18n.t('views.messages.create_agenda') 
     else
       render :new
+    end
+  end
+
+  def destroy
+    @team = Team.find_by(id: @agenda.team_id)
+    @owner_id = @team.owner_id
+    @assigns = @team.assigns
+    @user_emails = @assigns.each {|a| a.user.email}
+    if @agenda.user_id == current_user.id || @owner_id == current_user.id
+      @agenda.destroy
+      AgendaMailer.agenda_mail(@agenda, @user_emails).deliver
+      redirect_to dashboard_url, notice: I18n.t('views.messages.delete_agenda') 
+    else
+      redirect_to dashboard_url
     end
   end
 
