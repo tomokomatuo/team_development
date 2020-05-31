@@ -51,7 +51,9 @@ class TeamsController < ApplicationController
     # binding.irb
     # assign = Assign.find(params[:id])
     # @team = Team.friendly.find(params[:team_id])
+    binding.irb
     if @team.update(owner_params)
+      AdminMailer.admin_mailer(@contact).deliver
       redirect_to @team
     else
       render @team
